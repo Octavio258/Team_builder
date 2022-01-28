@@ -80,6 +80,201 @@ const managerprompt = () => {
         })
 }
 
+const teamPick = () => {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'teamselect',
+            message: 'Select which team memebers to add:',
+            choices: ['Engineer', 'Intern', 'I\'m done building my team']
+        }
+    ])
+        .then(({ teamselect }) => {
+            if (teamselect === 'Engineer') {
+                engineerPrompt()
+            } else if (teamselect === 'Intern') {
+                internPrompt()
+            } else {
+                endQuestionaire();
+            }
+        })
+}
+
+const continuePrompt = () => {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'continueselect',
+            message: 'Would you like to add more team members?',
+            choices: ['Yes', 'No']
+        }
+    ])
+        .then(({ continueselect }) => {
+            if (continueselect === 'Yes') {
+                teamPick();
+            } else {
+                endQuestionaire()
+            }
+        })
+}
+
+const endQuestionaire = () => {
+    if (!fs.existsSync(OUTPUT_DIR)) {
+        fs.mkdirSync(OUTPUT_DIR)
+    }
+    fs.writeFileSync(outputPath, generateHTML(teamMembers), err => {
+        if (err) {
+            console.log(err);
+            return
+        }
+    })
+    fs.copyFile(srcPath, path.join(__dirname, '/output/styles.css'), err => {
+        if(err) {
+            console.log(err);
+        }
+    } )
+    console.log('\nYour team page has been created in the output sub-directory!');
+}
+
+const engineerPrompt = () => {
+    console.log(`
+    ======================
+     Engineer Information
+    ======================
+    `);
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What\'s your engineer\'s name?',
+            validate: engineerAnswer => {
+                if (engineerAnswer) {
+                    return true;
+                } else {
+                    console.log('\nAn engineer name is required:')
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: 'Enter Engineer ID number:',
+            validate: engineerAnswer => {
+                if (engineerAnswer) {
+                    return true;
+                } else {
+                    console.log('\nEngineer\'s employee ID number required:')
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'Enter Engineer email address:',
+            validate: engineerAnswer => {
+                if (engineerAnswer) {
+                    return true;
+                } else {
+                    console.log('\nEngineer\'s email address required:')
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'github',
+            message: 'Enter Engineer Github user name:',
+            validate: engineerAnswer => {
+                if (engineerAnswer) {
+                    return true;
+                } else {
+                    console.log('\nEngineer\'s Github user name required:')
+                    return false;
+                }
+            }
+        },
+    ])
+    /*Taking input from questions to build new Engineer object and push to global teammembers array.
+    Takes user to continuePrompt function to decide on new members, or to finish.*/
+        .then((input) => {
+            const employee = new Engineer(input.name, input.id, input.email, input.github);
+            teamMembers.push(employee);
+            continuePrompt();
+        })
+}
+
+//Function to prompt Inquirer questions regarding Intern
+const internPrompt = () => {
+    console.log(`
+    ====================
+     Intern Information
+    ====================
+    `);
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What\'s your intern\'s name?',
+            validate: internAnswer => {
+                if (internAnswer) {
+                    return true;
+                } else {
+                    console.log('\nAn intern name is required:')
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: 'Enter Intern ID number:',
+            validate: internAnswer => {
+                if (internAnswer) {
+                    return true;
+                } else {
+                    console.log('\nIntern\'s employee ID number required:')
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'Enter Intern email address:',
+            validate: internAnswer => {
+                if (internAnswer) {
+                    return true;
+                } else {
+                    console.log('\nIntern\'s email address required:')
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'school',
+            message: 'Enter Intern\'s current school:',
+            validate: internAnswer => {
+                if (internAnswer) {
+                    return true;
+                } else {
+                    console.log('\nIntern\'s current school is required:')
+                    return false;
+                }
+            }
+        },
+    ])
+    /*Taking input from questions to build new Intern object and push to global teammembers array.
+    Takes user to continuePrompt function to decide on new members, or to finish.*/
+        .then((input) => {
+            const employee = new Intern(input.name, input.id, input.email, input.school);
+            teamMembers.push(employee);
+            continuePrompt();
+        })
+}
+
 async function init() {
     try {
         await managerprompt()
