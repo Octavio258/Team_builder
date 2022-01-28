@@ -1,0 +1,30 @@
+{
+  "name": "team_builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Octavio258/Team_builder.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Octavio258/Team_builder/issues"
+  },
+  "homepage": "https://github.com/Octavio258/Team_builder#readme",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "inquirer": "^8.2.0",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "jest": "^27.4.7"
+  }
+}
